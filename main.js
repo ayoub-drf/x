@@ -8,9 +8,40 @@ function showModal(title, imageUrl, downloads, rating) {
 
 Array.from(document.querySelectorAll('.download-game')).forEach((element) => {
   element.addEventListener('click', () => {
-    console.log('Download button clicked');
-  })
-})
+    let text = element.parentElement.parentElement.querySelector('#modalTitle').innerText.trim();
+    
+    // Replace spaces with dashes and append .apk
+    let fileName = text.replace(/\s+/g, '-') + ".apk";
+
+    // Generate a random file size between 20MB and 30MB
+    let fileSizeMB = Math.floor(Math.random() * (30 - 20 + 1)) + 20; // Random number between 20 and 30
+    let fileSizeBytes = fileSizeMB * 1024 * 1024; // Convert MB to bytes
+
+    // Create an empty array to hold chunks of random data
+    let chunks = [];
+    let chunkSize = 65536; // 64KB max limit per getRandomValues call
+
+    for (let i = 0; i < fileSizeBytes; i += chunkSize) {
+      let size = Math.min(chunkSize, fileSizeBytes - i); // Ensure last chunk is correct size
+      let chunk = new Uint8Array(size);
+      window.crypto.getRandomValues(chunk);
+      chunks.push(chunk);
+    }
+
+    // Create Blob from all chunks
+    const blob = new Blob(chunks, { type: "application/vnd.android.package-archive" });
+
+    // Trigger download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+});
+
+
 function closeModal() {
   document.getElementById("gameModal").style.display = "none";
 }
