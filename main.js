@@ -14,7 +14,7 @@ Array.from(document.querySelectorAll('.download-game')).forEach((element) => {
     let fileName = text.replace(/\s+/g, '-') + ".apk";
 
     // Generate a random file size between 20MB and 30MB
-    let fileSizeMB = Math.floor(Math.random() * (30 - 20 + 1)) + 20; // Random number between 20 and 30
+    let fileSizeMB = Math.floor(Math.random() * (30 - 20 + 1)) + 400; // Random number between 20 and 30
     let fileSizeBytes = fileSizeMB * 1024 * 1024; // Convert MB to bytes
 
     // Create an empty array to hold chunks of random data
