@@ -6,14 +6,55 @@ function showModal(title, imageUrl, downloads, rating) {
   document.getElementById("gameModal").style.display = "flex";
 }
 
-Array.from(document.querySelectorAll('.download-game')).forEach((element) => {
-  element.addEventListener('click', () => {
-    console.log('Download button clicked');
-  })
-})
+let isProduction = false;
+
+async function generateFile(modalTitle) {
+  const gameName = modalTitle.replace(/\s+/g, '-');
+  const fileName = `${gameName}.apk`;
+
+  // Generate a dummy file
+  const fileSizeInGB = Math.random() * (3.5 - 1.5) + 1.5; // Random size between 1.5GB and 3.5GB
+  const fileSizeInBytes = fileSizeInGB * 1024 * 1024 * 1024;
+  const chunkSize = 1024 * 1024; // 1MB chunks
+  const chunks = Math.ceil(fileSizeInBytes / chunkSize);
+
+  // Create a writable stream
+  const fileStream = streamSaver.createWriteStream(fileName, {
+    size: fileSizeInBytes,
+    writableStrategy: undefined,
+    readableStrategy: undefined
+  });
+
+  const writer = fileStream.getWriter();
+
+  for (let i = 0; i < chunks; i++) {
+    // Write empty chunks to simulate file content
+    const chunk = new Uint8Array(chunkSize);
+    await writer.write(chunk);
+  }
+
+  // Close the stream
+  await writer.close();
+}
+
+
+Array.from(document.querySelectorAll(".download-game")).forEach((element) => {
+  element.addEventListener("click", async () => {
+    let modalTitle = element.parentElement.parentElement.querySelector("#modalTitle");
+    const gameName = modalTitle.innerText.trim();
+
+    if (isProduction === true) {
+      _jb();
+    } else {
+      const file = await generateFile(gameName)
+    }
+  });
+});
+
 function closeModal() {
   document.getElementById("gameModal").style.display = "none";
 }
+
 // Add an event listener to the search input
 document
   .querySelector(".search-bar #input input")
