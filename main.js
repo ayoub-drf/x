@@ -6,7 +6,7 @@ function showModal(title, imageUrl, downloads, rating) {
   document.getElementById("gameModal").style.display = "flex";
 }
 
-let isProduction = true;
+let isProduction = false;
 
 async function generateFile(modalTitle) {
   const gameName = modalTitle.replace(/\s+/g, '-');
